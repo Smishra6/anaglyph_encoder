@@ -11,7 +11,7 @@ var pixel=5;
 var padding=14;
 
 // Select difficulty
-var difficulty=0; 
+var difficulty=4; 
 //0=easy, 4=balanced, 10=difficult, 20=impossible, 50=random
 
 
@@ -22,11 +22,11 @@ colorMode(HSB);
 // Message colors are: notRed = 1, notBlue = 2, notGreen = 3
 // Background colors are: red = 4, blue = 5, green = 6
 var redTop = 70*256/360; // center at 0
-var blueLow = 190*256/360; // center at 240
-var blueTop = 290*256/360; // center at 240
+var blueLow = 160*256/360; // center at 240
+var blueTop = 320*256/360; // center at 240
 var purpleLow = 290*256/360; // center at 0
-var greenLow = 10*256/360; // center at 120
-var greenTop = 240*256/360; // center at 120
+var greenLow = 20*256/360; // center at 120
+var greenTop = 220*256/360; // center at 120
 
 //initial cursor position
 var typingPos = [padding, padding];
@@ -156,18 +156,18 @@ var n9y=[ 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 2, 3
 var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
     typingPos=[padding+(colCount)*10, padding+(rowCount*12)];
     var background = [ // 10x10
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
-    var xOffset = 4+1;
+    var xOffset = 4;
     var yOffset = 1;
     for(var i=0; i<symbolX.length; i++){
         background[symbolX[i]+xOffset][symbolY[i]+yOffset] = 1;
