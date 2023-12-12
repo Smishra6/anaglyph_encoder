@@ -1,7 +1,8 @@
 
 // Type YOUR MESSAGE (capitals and numbers only)
-var r0 = "12    56"; // don't use 7
-var r1 = "34    56";
+var r0 = "1 2  3 4"; // don't use 7
+var r1 = "3 4  5 6";
+var r2 = "4 5  6 8";
 
 // Select size of a pixel
 var pixel=5;
@@ -18,12 +19,14 @@ var difficulty=0;
 
 //coor intervals for red and cyan spectrum
 colorMode(HSB);
+// Message colors are: notRed = 1, notBlue = 2, notGreen = 3
+// Background colors are: red = 4, blue = 5, green = 6
 var redTop = 70*256/360; // center at 0
-var blueLow = 170*256/360; // center at 240
-var blueTop = 310*256/360; // center at 240
+var blueLow = 190*256/360; // center at 240
+var blueTop = 290*256/360; // center at 240
 var purpleLow = 290*256/360; // center at 0
-var greenLow = 50*256/360; // center at 120
-var greenTop = 190*256/360; // center at 120
+var greenLow = 10*256/360; // center at 120
+var greenTop = 240*256/360; // center at 120
 
 //initial cursor position
 var typingPos = [padding, padding];
@@ -151,31 +154,35 @@ var n9x=[-3,-2,-1, 0, 1, 2,-3,-3,-3,-2,-1, 0, 1, 2, 2, 2,-3,-2,-1, 0, 1, 2, 2, 2
 var n9y=[ 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 2, 3]; // 7 segment
 }
 var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
-    typingPos=[padding+(colCount)*8, padding+(rowCount*12)];
-    var background = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
-        [0, 0, 0, 0, 0, 0, 0, 0], 
+    typingPos=[padding+(colCount)*10, padding+(rowCount*12)];
+    var background = [ // 10x10
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
+    var xOffset = 4+1;
+    var yOffset = 1;
     for(var i=0; i<symbolX.length; i++){
-        background[symbolX[i]+4][symbolY[i]] = 1;
+        background[symbolX[i]+xOffset][symbolY[i]+yOffset] = 1;
     }
     
-    for (var i=0; i<8; i++) {
-        for (var i2=0; i2<8; i2++) {
+    for (var i=0; i<background.length; i++) {
+        for (var i2=0; i2<background[0].length; i2++) {
             if (background[i][i2] === 1) {
-                MessageX.push(i-4+typingPos[0]);
+                MessageX.push(i+typingPos[0]);
                 MessageY.push(i2+typingPos[1]);
                 MessageColor.push(color);
             } else {
-                BackgroundX.push(i-4+typingPos[0]);
+                BackgroundX.push(i+typingPos[0]);
                 BackgroundY.push(i2+typingPos[1]);
-                BackgroundColor.push(color);
+                BackgroundColor.push(color+3);
             }
         }
     }
@@ -305,15 +312,21 @@ var addMessage=function(msg, col, color) {
 
 addMessage(r0, 0, 1);
 addMessage(r1, 1, 2);
+addMessage(r2, 2, 3);
 
 //Message typing - check if coordinate exists
 var hledej=function(pozX, pozY){
     for(var k=0; k<MessageX.length; k++){
         if(MessageX[k]===pozX && MessageY[k]===pozY){
-            return true;
+            return MessageColor[k];
         }
     }
-    return false;
+    for(var k=0; k<BackgroundX.length; k++){
+        if (BackgroundX[k]===pozX && BackgroundY[k]===pozY){
+            return BackgroundColor[k];
+        }
+    }
+    return 0;
 };
 var selectGreen=function(){
     odstin=random()*255;
@@ -322,6 +335,7 @@ var selectGreen=function(){
     }
     satur=random()*8;
     if(satur>1) {satur=255;}
+    satur = 255;
 };
 var selectNotGreen=function(){
     odstin=random()*255;
@@ -352,38 +366,68 @@ var selectRed=function(){
     }
     satur=random()*8;
     if(satur>1) {satur=255;}
-    satur = 0;
 };
 var selectNotRed=function(){
     odstin=random()*255;
     while(!(odstin>redTop && odstin<purpleLow)){
         odstin=random()*255;
     }
-    satur=255;
 };
+var selectNeutral=function(){
+    odstin=random()*255;
+    satur = 255;
+};
+
+var selectColor = function(assignedColor) {
+    switch (assignedColor) {
+        case 1:
+            selectNotRed(); // message
+            break;
+        case 2:
+            selectNotBlue();
+            break;
+        case 3:
+            selectNotGreen();
+            break;
+        case 4:
+            selectRed();
+            break;
+        case 5:
+            selectBlue();
+            break;
+        case 6:
+            selectGreen();
+            break;
+        default:
+            selectNeutral();
+            break;
+    }
+};
+
 var pom=0;
 for(var i=0; i<width/pixel; i++){
     for(var j=0; j<width/pixel; j++){
         odstin=random()*255;
         satur=255;
         pom=random()*100;
-        if(hledej(i,j)){
+        var assignedColor = hledej(i,j);
+        if(assignedColor > 0){
             if (pom>difficulty){
-                selectNotRed(); // message
+                selectColor(assignedColor); // message
             } else {
-                selectRed(); // background
+                selectColor(assignedColor); // background
             }
         } else if((abs(i-j)<7 && abs(i*pixel+j*pixel-width)<(width-1.9*pixel*(padding)))|| odstin<155) { 
             if (pom>difficulty){
-                selectRed(); // background
+                selectColor(assignedColor); // background
             } else {
-                selectRed(); // message
+                selectColor(assignedColor); // message
             }
         } else{
             if(pom<50) {
-                selectRed(); // message
+                selectColor(assignedColor); // message
             } else {
-                selectRed(); // background
+                selectColor(assignedColor); // background
             }
         }
         fill(odstin,satur,255);
