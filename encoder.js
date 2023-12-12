@@ -1,8 +1,11 @@
 
 // Type YOUR MESSAGE (capitals and numbers only)
-var r0 = "1 2  3 4"; // don't use 7
+var r0 = "1 2  3 4"; // don't use 7 and don't use blue
 var r1 = "3 4  5 6";
 var r2 = "4 5  6 8";
+var r3 = "2 3  1 9";
+var r4 = "5 4  9 2";
+var r5 = "8 1  8 3";
 
 // Select size of a pixel
 var pixel=5;
@@ -12,6 +15,7 @@ var padding=14;
 
 // Select difficulty
 var difficulty=4; 
+var greenDifficulty=difficulty+10;
 //0=easy, 4=balanced, 10=difficult, 20=impossible, 50=random
 
 
@@ -311,8 +315,11 @@ var addMessage=function(msg, col, color) {
 };
 
 addMessage(r0, 0, 1);
-addMessage(r1, 1, 2);
+addMessage(r1, 1, 3);
 addMessage(r2, 2, 3);
+addMessage(r3, 3, 1);
+addMessage(r4, 4, 1);
+addMessage(r5, 5, 3);
 
 //Message typing - check if coordinate exists
 var hledej=function(pozX, pozY){
@@ -412,7 +419,8 @@ for(var i=0; i<width/pixel; i++){
         pom=random()*100;
         var assignedColor = hledej(i,j);
         if(assignedColor > 0){
-            if (pom>difficulty){
+            var pom_difficulty_pass = assignedColor===3||assignedColor===6 ? pom > greenDifficulty : pom > difficulty;
+            if (pom_difficulty_pass){
                 selectColor(assignedColor); // message
             } else {
                 selectColor(assignedColor); // background
