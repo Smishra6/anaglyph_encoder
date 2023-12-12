@@ -1,5 +1,7 @@
+
 // Type YOUR MESSAGE (capitals and numbers only)
-var message="012345689"; // don't use 7
+var r0 = "12    56"; // don't use 7
+var r1 = "34    56";
 
 // Select size of a pixel
 var pixel=5;
@@ -31,8 +33,23 @@ var satur=255;
 
 noStroke();
 
+var zeros = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+];
+
 var MessageX=[];
 var MessageY=[];
+var BackgroundX=[];
+var BackgroundY=[];
+var MessageColor=[];
+var BackgroundColor = [];
 
 //Symbols graphics
 {
@@ -133,131 +150,161 @@ var n8y=[ 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 5, 6
 var n9x=[-3,-2,-1, 0, 1, 2,-3,-3,-3,-2,-1, 0, 1, 2, 2, 2,-3,-2,-1, 0, 1, 2, 2, 2]; // 7 segment
 var n9y=[ 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 2, 3]; // 7 segment
 }
-var addSymbol=function(symbolX, symbolY, colCount, rowCount){
-    typingPos=[padding+(colCount)*8, padding];
+var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
+    typingPos=[padding+(colCount)*8, padding+(rowCount*12)];
+    var background = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0], 
+    ];
     for(var i=0; i<symbolX.length; i++){
-        MessageX.push(symbolX[i]+typingPos[0]);
-        MessageY.push(symbolY[i]+typingPos[1]);
+        background[symbolX[i]+4][symbolY[i]] = 1;
     }
+    
+    for (var i=0; i<8; i++) {
+        for (var i2=0; i2<8; i2++) {
+            if (background[i][i2] === 1) {
+                MessageX.push(i-4+typingPos[0]);
+                MessageY.push(i2+typingPos[1]);
+                MessageColor.push(color);
+            } else {
+                BackgroundX.push(i-4+typingPos[0]);
+                BackgroundY.push(i2+typingPos[1]);
+                BackgroundColor.push(color);
+            }
+        }
+    }
+    // for(var i=0; i<symbolX.length; i++){
+    //     MessageX.push(symbolX[i]+typingPos[0]);
+    //     MessageY.push(symbolY[i]+typingPos[1]);
+    // }
 };
 
 //Message construtcion
-var addMessage=function(msg, col)
-    for(var i=0; i<message.length; i++){
-    switch(message[i]){
-        case "A":
-            addSymbol(Ax,Ay,i,col);
-            break;
-        case "B":
-            addSymbol(Bx,By,i,col);
-            break;
-        case "C":
-            addSymbol(Cx,Cy,i,col);
-            break;
-        case "D":
-            addSymbol(Dx,Dy,i,col);
-            break;
-        case "E":
-            addSymbol(Ex,Ey,i,col);
-            break;
-        case "F":
-            addSymbol(Fx,Fy,i,col);
-            break;
-        case "G":
-            addSymbol(Gx,Gy,i,col);
-            break;
-        case "H":
-            addSymbol(Hx,Hy,i,col);
-            break;
-        case "I":
-            addSymbol(Ix,Iy,i,col);
-            break;
-        case "J":
-            addSymbol(Jx,Jy,i,col);
-            break;
-        case "K":
-            addSymbol(Kx,Ky,i,col);
-            break;
-        case "L":
-            addSymbol(Lx,Ly,i,col);
-            break;
-        case "M":
-            addSymbol(Mx,My,i,col);
-            break;
-        case "N":
-            addSymbol(Nx,Ny,i,col);
-            break;
-        case "O":
-            addSymbol(Ox,Oy,i,col);
-            break;
-        case "P":
-            addSymbol(Px,Py,i,col);
-            break;
-        case "Q":
-            addSymbol(Qx,Qy,i,col);
-            break;
-        case "R":
-            addSymbol(Rx,Ry,i,col);
-            break;
-        case "S":
-            addSymbol(Sx,Sy,i,col);
-            break;
-        case "T":
-            addSymbol(Tx,Ty,i,col);
-            break;
-        case "U":
-            addSymbol(Ux,Uy,i,col);
-            break;
-        case "V":
-            addSymbol(Vx,Vy,i,col);
-            break;
-        case "W":
-            addSymbol(Wx,Wy,i,col);
-            break;
-        case "X":
-            addSymbol(Xx,Xy,i,col);
-            break;
-        case "Y":
-            addSymbol(Yx,Yy,i,col);
-            break;
-        case "Z":
-            addSymbol(Zx,Zy,i,col);
-            break;
-        case "0":
-            addSymbol(n0x,n0y,i,col);
-            break;
-        case "1":
-            addSymbol(n1x,n1y,i,col);
-            break;
-        case "2":
-            addSymbol(n2x,n2y,i,col);
-            break;
-        case "3":
-            addSymbol(n3x,n3y,i,col);
-            break;
-        case "4":
-            addSymbol(n4x,n4y,i,col);
-            break;
-        case "5":
-            addSymbol(n5x,n5y,i,col);
-            break;
-        case "6":
-            addSymbol(n6x,n6y,i,col);
-            break;
-        case "7":
-            addSymbol(n7x,n7y,i,col);
-            break;
-        case "8":
-            addSymbol(n8x,n8y,i,col);
-            break;
-        case "9":
-            addSymbol(n9x,n9y,i,col);
-            break;
-        default:
-            break;
+var addMessage=function(msg, col, color) {
+    for(var i=0; i<msg.length; i++){
+        switch(msg[i]){
+            case "A":
+                addSymbol(Ax,Ay,i,col,color);
+                break;
+            case "B":
+                addSymbol(Bx,By,i,col,color);
+                break;
+            case "C":
+                addSymbol(Cx,Cy,i,col,color);
+                break;
+            case "D":
+                addSymbol(Dx,Dy,i,col,color);
+                break;
+            case "E":
+                addSymbol(Ex,Ey,i,col,color);
+                break;
+            case "F":
+                addSymbol(Fx,Fy,i,col,color);
+                break;
+            case "G":
+                addSymbol(Gx,Gy,i,col,color);
+                break;
+            case "H":
+                addSymbol(Hx,Hy,i,col,color);
+                break;
+            case "I":
+                addSymbol(Ix,Iy,i,col,color);
+                break;
+            case "J":
+                addSymbol(Jx,Jy,i,col,color);
+                break;
+            case "K":
+                addSymbol(Kx,Ky,i,col,color);
+                break;
+            case "L":
+                addSymbol(Lx,Ly,i,col,color);
+                break;
+            case "M":
+                addSymbol(Mx,My,i,col,color);
+                break;
+            case "N":
+                addSymbol(Nx,Ny,i,col,color);
+                break;
+            case "O":
+                addSymbol(Ox,Oy,i,col,color);
+                break;
+            case "P":
+                addSymbol(Px,Py,i,col,color);
+                break;
+            case "Q":
+                addSymbol(Qx,Qy,i,col,color);
+                break;
+            case "R":
+                addSymbol(Rx,Ry,i,col,color);
+                break;
+            case "S":
+                addSymbol(Sx,Sy,i,col,color);
+                break;
+            case "T":
+                addSymbol(Tx,Ty,i,col,color);
+                break;
+            case "U":
+                addSymbol(Ux,Uy,i,col,color);
+                break;
+            case "V":
+                addSymbol(Vx,Vy,i,col,color);
+                break;
+            case "W":
+                addSymbol(Wx,Wy,i,col,color);
+                break;
+            case "X":
+                addSymbol(Xx,Xy,i,col,color);
+                break;
+            case "Y":
+                addSymbol(Yx,Yy,i,col,color);
+                break;
+            case "Z":
+                addSymbol(Zx,Zy,i,col,color);
+                break;
+            case "0":
+                addSymbol(n0x,n0y,i,col,color);
+                break;
+            case "1":
+                addSymbol(n1x,n1y,i,col,color);
+                break;
+            case "2":
+                addSymbol(n2x,n2y,i,col,color);
+                break;
+            case "3":
+                addSymbol(n3x,n3y,i,col,color);
+                break;
+            case "4":
+                addSymbol(n4x,n4y,i,col,color);
+                break;
+            case "5":
+                addSymbol(n5x,n5y,i,col,color);
+                break;
+            case "6":
+                addSymbol(n6x,n6y,i,col,color);
+                break;
+            case "7":
+                addSymbol(n7x,n7y,i,col,color);
+                break;
+            case "8":
+                addSymbol(n8x,n8y,i,col,color);
+                break;
+            case "9":
+                addSymbol(n9x,n9y,i,col,color);
+                break;
+            default:
+                break;
     }
-
 }
+};
+
+addMessage(r0, 0, 1);
+addMessage(r1, 1, 2);
 
 //Message typing - check if coordinate exists
 var hledej=function(pozX, pozY){
