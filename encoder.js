@@ -1,21 +1,21 @@
 
 // Type YOUR MESSAGE (capitals and numbers only)
-var r0 = "1 2  3 4"; // don't use 7 and don't use blue
-var r1 = "3 4  5 6";
-var r2 = "4 5  6 8";
-var r3 = "2 3  1 9";
-var r4 = "5 4  9 2";
-var r5 = "8 1  8 3";
+var r0 = "12   34"; // don't use 7 and don't use blue
+var r1 = "34   56";
+var r2 = "45   68";
+var r3 = "23   29";
+var r4 = "53   92";
+var r5 = "86   83";
 
 // Select size of a pixel
 var pixel=5;
 
 // Select the distance between edge of the image and the text
-var padding=14;
+var padding=4;
 
 // Select difficulty
 var difficulty=4; 
-var greenDifficulty=difficulty+10;
+var greenDifficulty=difficulty+20;
 //0=easy, 4=balanced, 10=difficult, 20=impossible, 50=random
 
 
@@ -57,6 +57,72 @@ var BackgroundX=[];
 var BackgroundY=[];
 var MessageColor=[];
 var BackgroundColor = [];
+var GlobalColor = 3;
+
+var swapGlobalColor=function(){
+    if (GlobalColor === 1) {
+        GlobalColor = 3;
+    } else if (GlobalColor === 3) {
+        GlobalColor = 1;
+    }
+};
+
+var checkIfNeighbor=function(mask, x, y){
+    var xmin = 0;
+    var xmax = 7;
+    var ymin = 0;
+    var ymax = 7;
+    if (x > xmin && y > ymin) {
+        if (mask[x-1][y-1] === 1) {
+            return true;
+        }
+    }
+    
+    if (x > xmin) {
+       if (mask[x-1][y] === 1) {
+            return true;
+        } 
+    }
+    
+    if (x > xmin && y < ymax) {
+        if (mask[x-1][y+1] === 1) {
+            return true;
+        }
+    }
+    
+    if (y < ymax) {
+       if (mask[x][y+1] === 1) {
+            return true;
+        } 
+    }
+    
+    if (x < xmax && y < ymax) {
+        if (mask[x+1][y+1] === 1) {
+            return true;
+        }
+    }
+    
+    if (x < xmax) {
+       if (mask[x+1][y] === 1) {
+            return true;
+        } 
+    }
+    
+    if (x < xmax && y > ymin) {
+        if (mask[x+1][y-1] === 1) {
+            return true;
+        }
+    }
+    
+    if (y > ymin) {
+       if (mask[x][y-1] === 1) {
+            return true;
+        } 
+    }
+    
+    return false;
+    
+};
 
 //Symbols graphics
 {
@@ -158,7 +224,27 @@ var n9x=[-3,-2,-1, 0, 1, 2,-3,-3,-3,-2,-1, 0, 1, 2, 2, 2,-3,-2,-1, 0, 1, 2, 2, 2
 var n9y=[ 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 2, 3]; // 7 segment
 }
 var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
-    typingPos=[padding+(colCount)*10, padding+(rowCount*12)];
+    var vertPadding = padding;
+    if (rowCount >= 2) {
+        vertPadding +=12;   
+    }
+    if (rowCount >= 4) {
+        vertPadding +=12;
+    }
+    
+    typingPos=[10+padding+(colCount)*10, vertPadding+(rowCount*12)];
+    var mask = [ // 10x10
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
     var background = [ // 10x10
         [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
@@ -168,13 +254,27 @@ var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        // [0, 0, 0, 0, 0, 0, 0, 0, 0, ],
         // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
     var xOffset = 4;
-    var yOffset = 1;
+    var yOffset = 0;
     for(var i=0; i<symbolX.length; i++){
-        background[symbolX[i]+xOffset][symbolY[i]+yOffset] = 1;
+        mask[symbolX[i]+xOffset][symbolY[i]+yOffset] = 1;
+    }
+    
+    for (var i=0; i<mask.length; i++) {
+        for (var i2=0; i2<mask[0].length; i2++) {
+            if (mask[i][i2] === 1) {
+                background[i][i2] = 1;
+            } else {
+                if (checkIfNeighbor(mask, i, i2)) {
+                    background[i][i2] = 0;
+                } else {
+                    background[i][i2] = 1;
+                }
+            }
+        }
     }
     
     for (var i=0; i<background.length; i++) {
@@ -199,6 +299,8 @@ var addSymbol=function(symbolX, symbolY, colCount, rowCount, color){
 //Message construtcion
 var addMessage=function(msg, col, color) {
     for(var i=0; i<msg.length; i++){
+        swapGlobalColor();
+        color = GlobalColor;
         switch(msg[i]){
             case "A":
                 addSymbol(Ax,Ay,i,col,color);
@@ -309,6 +411,7 @@ var addMessage=function(msg, col, color) {
                 addSymbol(n9x,n9y,i,col,color);
                 break;
             default:
+                
                 break;
     }
 }
